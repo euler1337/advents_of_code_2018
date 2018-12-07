@@ -78,9 +78,62 @@ func calc1() {
 	fmt.Printf("count[%d]", count)
 }
 
+func calc2() {
+	file, err := os.Open("input.txt")
+	check(err)
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+
+
+	m := make(map[string][]int)
+
+	index := 0
+	
+	// Create blacklist for all level indexes.  
+
+	for scanner.Scan() {
+		index++
+
+		input_str := scanner.Text()
+		xs, ys, x, y := parseRow(input_str)
+
+		for xcoord := 0; xcoord < x; xcoord++ {
+			for ycoord := 0; ycoord < y; ycoord++ {
+				key := strconv.Itoa(xs + xcoord) + "_" + strconv.Itoa(ys + ycoord)
+				_, ok := m[key]
+				if ok {
+					m[key] = append(m[key], index)
+				} else {
+					m[key] = append(m[key], index)	
+				}			
+			}
+		}
+	}
+
+	blacklist := make(map[int]int)
+	for _, v := range m { 
+		if(len(v) > 1) {
+			for _, element := range v  {
+				blacklist[element] = blacklist[element] + 1
+				//fmt.Printf("add element[%d] to blacklist", element)
+			}
+		}
+	}
+
+	// Find the index which is not in blacklist
+	index_search := 0
+	for {
+		index_search++
+		_, ok := blacklist[index_search]
+		if !ok {
+			fmt.Printf("index[%d] is not in blacklist", index_search)
+			break;
+		}
+	}
+}
 
 func main() {
-	calc1()
-	//calc2()
+	//calc1()
+	calc2()
 
 }
