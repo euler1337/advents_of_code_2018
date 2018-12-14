@@ -157,8 +157,51 @@ func calc1() {
 
 	GuardIdInt, _ := strconv.Atoi(maxTimeGuard)
 	fmt.Printf("ANSWER IS: %d\n", mostPopKey * GuardIdInt)
-}
 
+	// 2
+
+	// Which minute is any guard most often asleep on?
+	globalMaxKey := 0
+	globalMaxVal := -1
+	
+	for guard, listVal := range mapSleepMinutesList {
+		
+		sleepMinutesMap := make(map[int]int)
+
+		//fmt.Printf("Guard[%s], minute=%d\n", guard, len(sleepMinutesMap))
+
+		for _, i := range listVal {
+			_, ok := sleepMinutesMap[i]
+			if ok {
+				sleepMinutesMap[i] = sleepMinutesMap[i]+1
+			} else {
+				sleepMinutesMap[i] = 1
+			}
+		}
+
+		fmt.Printf("Guard[%s], Number of keys = %d\n", guard, len(sleepMinutesMap))
+
+		forThisGuardMaxKey := 0
+		forThisGuardMaxVal := 0
+
+		for key, val := range sleepMinutesMap {
+			if val > forThisGuardMaxVal {
+				forThisGuardMaxVal = val
+				forThisGuardMaxKey = key
+			}
+		}
+
+		fmt.Printf("GUARD = %s, MIN = %d COUNT: %d\n",guard, forThisGuardMaxKey, forThisGuardMaxVal)
+
+		if forThisGuardMaxVal > globalMaxVal {
+			globalMaxVal = forThisGuardMaxKey
+			globalMaxKey, _ = strconv.Atoi(guard)
+		}
+	}
+	fmt.Printf("B) KEY = %d, MIN = %d ANSWER IS: %d\n",globalMaxKey, globalMaxVal, globalMaxKey * globalMaxVal)
+
+	//Became to messy. Looked at the logs and found the answer. it was guard 1097 * minute 21. Lol O_o
+}
 
 func main() {
 	calc1()
